@@ -1,0 +1,59 @@
+name: flutter_base_project
+description: A new Flutter project.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.16.1 <3.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  flutter_svg: ^1.0.3
+  shared_preferences: ^2.0.13
+  intl: ^0.17.0 #to format dates
+  image_picker: ^0.8.4+11
+  cached_network_image: ^3.2.0
+  file_picker: ^4.5.1
+  url_launcher: ^6.0.20
+  pull_to_refresh: ^2.0.0
+  provider: ^6.0.2
+  sealed_unions: ^3.0.3+1
+  retrofit: '>=3.0.0 <4.0.0'
+  floor: ^1.2.0 # SQLITE comment it out if you dont need
+  flutter_native_splash: ^2.1.5
+  package_info_plus: ^1.4.2
+  bloc: ^8.0.3
+  flutter_bloc: ^8.0.1
+  equatable: ^2.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+  flutter_launcher_icons: ^0.9.2
+  sealed_generators:
+  freezed_annotation: ^1.1.0
+  json_serializable: '>4.4.0'
+  retrofit_generator: '3.0.1'
+  floor_generator: ^1.2.0
+  build_runner:
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/images/
+
+flutter_native_splash:
+  image: assets/images/splash_logo.png
+  background_image: assets/images/background_splash.png
+  fullscreen: true
+  android: true
+  ios: true
+  android_12:
+    image: assets/images/splash_logo.png
+    icon_background_color: "#CC4022"
+

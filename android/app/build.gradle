@@ -1,0 +1,125 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+android {
+    compileSdkVersion flutter.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    def appCenterBuildID = "${System.env.APPCENTER_BUILD_ID}" != "null" ? "${System.env.APPCENTER_BUILD_ID}" : flutterVersionCode
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.techswivel.flutterbaseapp"
+        minSdkVersion 16
+        targetSdkVersion 32
+        versionCode appCenterBuildID.toInteger()
+        versionName flutterVersionName
+        buildConfigField("int", "APPCENTER_BUILD_ID", appCenterBuildID)
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+            manifestPlaceholders = [enableCrashReporting: "true"]
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    outputFileName = new File("Base Project_v" + variant.versionName + "(" + android.defaultConfig.buildConfigFields["APPCENTER_BUILD_ID"].value + ")" + ".apk")
+                }
+            }
+        }
+        debug
+                {
+                    manifestPlaceholders = [enableCrashReporting: "false"]
+                    minifyEnabled false
+                    shrinkResources false
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    applicationVariants.all { variant ->
+                        variant.outputs.all { output ->
+                            outputFileName = new File("Base_project-v" + variant.versionName + "(" + android.defaultConfig.buildConfigFields["APPCENTER_BUILD_ID"].value + ")" + ".apk")
+                        }
+                    }
+                }
+    }
+
+    android {
+           lintOptions {
+                 checkReleaseBuilds false
+              }
+         }
+
+    flavorDimensions "version"
+
+    productFlavors {
+        production {
+            dimension "version"
+        }
+
+        staging {
+            dimension "version"
+            applicationIdSuffix ".staging"
+            versionName flutterVersionName+"-staging"
+        }
+
+        acceptance {
+            dimension "version"
+            applicationIdSuffix ".acceptance"
+            versionName flutterVersionName+"-acceptance"
+        }
+
+        development {
+            dimension "version"
+            applicationIdSuffix ".development"
+            versionName flutterVersionName+"-development"
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
